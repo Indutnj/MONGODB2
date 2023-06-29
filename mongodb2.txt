@@ -1,0 +1,387 @@
+Mongo-DB-Task2-Design database for Zen class programme
+*******************************************************
+1.users
+
+db.users.insertMany([
+    {
+        user_id: 1001,
+        name: "Ramya",
+        email_id: "ramya@gmail.com",
+        mentor_id: 2001
+    },
+    {
+        user_id: 1002,
+        name: "Kannan",
+        email_id: "kannan@gmail.com",
+        mentor_id: 2002
+    },
+    {
+        user_id: 1003,
+        name: "Rani",
+        email_id: "rani@gmail.com",
+        mentor_id: 2003
+    },
+    {
+        user_id: 1004,
+        name: "Meera",
+        email_id: "meera@gmail.com",
+        mentor_id: 2003
+    },
+    {
+        user_id: 1005,
+        name: "Santhi",
+        email_id: "Santhi@gmail.com",
+        mentor_id: 2001
+    },
+])
+
+2.codekata
+
+db.codekata.insertMany([
+    {
+        user_id: 1001,
+        completed: 10
+    },
+    {
+        user_id: 1002,
+        completed: 20
+    },
+    {
+        user_id: 1003,
+        completed: 30
+    },
+    {
+        user_id: 1004,
+        completed: 40
+    },
+    {
+        user_id: 1005,
+        completed: 50
+    },
+]);
+
+3.attendenceence
+
+db.attendenceence.insertMany([
+    {
+        user_id: 1001,
+        class: 1,
+        attendence: true
+    },
+    {
+        user_id: 1002,
+        class: 2,
+        attendence: false
+    },
+    {
+        user_id: 1003,
+        class: 3,
+        attendence: false
+    },
+    {
+        user_id: 1004,
+        class: 4,
+        attendence: true
+    },
+    {
+        user_id: 1005,
+        class: 5,
+        attendence: true
+    },
+])
+
+
+4.Topics
+
+db.topics.insertMany([
+    {
+        class: 1,
+        topic: "javascript",
+        class_date: new Date("2022-10-5"),
+    },
+    {
+        class: 2,
+        topic: "html",
+        class_date: new Date("2022-10-10"),
+    },
+    {
+        class: 3,
+        topic: "css",
+        class_date: new Date("2022-10-15"),
+    },
+    {
+        class: 4,
+        topic: "react",
+        class_date: new Date("2022-10-20"),
+    },
+    {
+        class: 5,
+        topic: "mongoDB",
+        class_date: new Date("2022-10-25"),
+    },
+])
+
+5.tasks
+
+db.tasks.insertMany([
+    {
+        taskid: 1,
+        class: 1,
+        user_id: 1,
+        task: "javascript task",
+        due_date: new Date("2022-10-5"),
+        submitted: true
+    },
+    {
+        taskid: 2,
+        class: 2,
+        user_id: 2,
+        task: "html task",
+        due_date: new Date("2022-10-10"),
+        submitted: false
+    },
+    {
+        taskid: 3,
+        class: 3,
+        user_id: 3,
+        task: "css task",
+        due_date: new Date("2022-10-15"),
+        submitted: true
+    },
+    {
+        taskid: 4,
+        class: 4,
+        user_id: 4,
+        task: "react task",
+        due_date: new Date("2022-10-20"),
+        submitted: false
+    },
+    {
+        taskid: 5,
+        class: 5,
+        user_id: 5,
+        task: "mongoDB task",
+        due_date: new Date("2022-10-25"),
+        submitted: true
+    },
+])
+
+6.company drives
+
+db.companydrives.insertMany([
+    {
+        user_id: 1,
+        drive_date: new Date("2022-10-04"),
+        company: "zoho"
+    },
+    {
+        user_id: 2,
+        drive_date:new Date("2022-10-06"),
+        company: "HCL"
+    },
+    {
+        user_id: 3,
+        drive_date: new Date("2022-10-12"),
+        company: "IBM"
+    },
+    {
+        user_id: 4,
+        drive_date: new Date("2022-10-20"),
+        company: "Honeywell"
+    },
+    {
+        user_id: 5,
+        drive_date: new Date("2022-10-24"),
+        company: "Animaker"
+    },
+])
+
+7.mentors
+
+db.mentors.insertMany([
+    {
+        mentor_id: 1,
+        mentor_name: "vidhya",
+        mentor_email_id: "vidhya@gmail.com",
+        mentee_count:15
+    },
+    {
+        mentor_id: 2,
+        mentor_name: "sangeetha",
+        mentor_email_id: "sangeetha@gmail.com",
+        mentee_count:10
+    },
+    {
+        mentor_id: 3,
+        mentor_name: "arun kumar",
+        mentor_email_id: "arun@gmail.com",
+        mentee_count:20
+    },
+    {
+        mentor_id: 4,
+        mentor_name: "saravanan",
+        mentor_email_id: "saravanan@gmail.com",
+        mentee_count:14
+    },
+    {
+        mentor_id: 5,
+        mentor_name: "sunny",
+        mentor_email_id: "sunny@gmail.com",
+        mentee_count:35
+    },
+])
+
+********************************************************************************************
+1.Find all the topics and tasks which are taught in the month of october
+********************************************************************************************
+db.topics.aggregate([
+    {
+
+        $lookup: {
+            from: "tasks",
+            localField: "class",
+            foreignField: "class",
+            as: "taskinfo",
+        },
+    },
+    {
+        $match: {
+            $and: [
+                {
+                    $or: [
+                        { topic_date: { $gt: new Date("30-sep-2022") } },
+                        { topic_date: { $lt: new Date("01-nov-2022") } },
+                    ],
+                },
+
+                {
+                    $or: [
+                        { "taskinfo.due_date": { $gt: new Date("30-sep-2022") } },
+                        { "taskinfo.due_date": { $lt: new Date("01-nov-2022") } },
+                    ],
+                },
+            ],
+        },
+    },
+]);
+********************************************************************************************
+2.Find all the company drives which appeared between 15-oct-2022 and 31-oct-2022
+********************************************************************************************
+db.companydrives.find({
+    $or: [
+        { drive_date: { $gte: ISODate("2022-10-15"),$lte: ISODate("2022-10-31") } }
+
+    ],
+})
+
+3.Find all the company drives and students who are appeared for the placement
+
+db.companydrives.aggregate([
+    {
+        $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "user_id",
+            as: "info",
+        },
+    },
+    {
+        $project: {
+            _id: 0,
+            company: 1,
+            drive_date: 1,
+            "info.name": 1,
+            "info.email_id": 1,
+            "info.user_id": 1,
+        },
+    },
+])
+********************************************************************************************
+4.Find the number of completed solved by the user in codekata
+********************************************************************************************
+db.codekata.aggregate([
+    {
+        $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "user_id",
+            as: "info",
+        },
+    },
+    {
+        $project: {
+            _id: 0,
+            user_id: 1,
+            completed: 1,
+            "info.name": 1,
+        },
+    },
+])
+********************************************************************************************
+5.Find all the mentors who has the mentee's count more than 15
+********************************************************************************************
+db.users.aggregate([
+    {
+      $lookup: {
+        from: "mentors",
+        localField: "mentor_id",
+        foreignField: "mentor_id",
+        as: "mentorInfo",
+      },
+    },
+    {
+      $group: {
+        _id: {
+          mentor_id: "$mentorInfo.mentor_id",
+          mentor_name: "$mentorInfo.mentor_name",
+          mentee_count:"$mentorInfo.mentee_count"
+        },
+        mentee_count: { $sum: 1 },
+      },
+    },
+    { $match: { mentee_count: { $gt: 1 } } },
+  ])
+*********************************************************
+  db.mentors.find({mentee_count:{$gte:15}})
+********************************************************************************************
+6.Find the number of users who are absent and task is not submitted  between 15-oct-2022 and 31-oct-2022
+********************************************************************************************
+db.attendenceance.aggregate([
+    {
+      $lookup: {
+        from: "topics",
+        localField: "class",
+        foreignField: "class",
+        as: "topics",
+      },
+    },
+    {
+      $lookup: {
+        from: "tasks",
+        localField: "class",
+        foreignField: "class",
+        as: "tasks",
+      },
+    },
+    { $match: { $and: [{ attendenceed: false }, { "tasks.submitted": false }] } },
+    {
+      $match: {
+        $and: [
+          {
+            $or: [
+              { "topics.topic_date": { $gte: ISODate("2022-10-15") , $lte: ISODate("2022-10-31") } }
+               ],
+          },
+          {
+            $or: [
+              { "tasks.due_date": { $gte: ISODate("2022-10-15") , $lte: ISODate("2022-10-31") } },
+               ],
+          },
+        ],
+      },
+    },
+    {
+      $count:"Absentees",
+    },
+  ])
+  
